@@ -1,3 +1,8 @@
+# ====== 可修改参数区 ======
+HIDDEN_UNITS = 32      # 最优隐藏层神经元个数
+LEARNING_RATE = 0.001  # 最优学习率
+# ==========================
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -29,14 +34,14 @@ X_test  = torch.tensor(X_test, dtype=torch.float32)
 y_test  = torch.tensor(y_test, dtype=torch.long)
 
 # =============================
-# 2. 最简 BP 神经网络
+# 2. 最简 BP 神经网络（使用最优参数）
 # =============================
 class BPNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(30, 16)   # 输入层 -> 隐藏层
-        self.relu = nn.ReLU()          # 激活函数
-        self.fc2 = nn.Linear(16, 2)    # 输出层（二分类）
+        self.fc1 = nn.Linear(30, HIDDEN_UNITS)   # 输入层 -> 隐藏层（使用配置参数）
+        self.relu = nn.ReLU()                    # 激活函数
+        self.fc2 = nn.Linear(HIDDEN_UNITS, 2)    # 隐藏层 -> 输出层（使用配置参数）
 
     def forward(self, x):
         x = self.fc1(x)    # z = W1x + b1
@@ -47,10 +52,10 @@ class BPNet(nn.Module):
 model = BPNet()
 
 # =============================
-# 3. 损失函数 & 优化器
+# 3. 损失函数 & 优化器（使用最优学习率）
 # =============================
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.01)
+optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 # =============================
 # 4. 训练（BP 发生在这里）
